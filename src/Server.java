@@ -12,7 +12,7 @@ public class Server {
         try{
             ServerSocket s = new ServerSocket(8000);
             s.setReuseAddress(true);
-            System.out.println("Servidor iniciado esperando por archivos..");
+            System.out.println("Servidor iniciado esperando por archivos...");
             File f = new File("");
             String ruta = f.getAbsolutePath();
             String carpeta="archivos";
