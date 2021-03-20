@@ -10,8 +10,7 @@ public class Server {
 
     public Server(){
         try{
-            int pto = 8000;
-            ServerSocket s = new ServerSocket(pto);
+            ServerSocket s = new ServerSocket(8000);
             s.setReuseAddress(true);
             System.out.println("Servidor iniciado esperando por archivos..");
             File f = new File("");
@@ -26,13 +25,13 @@ public class Server {
             if (listaDeArchivos == null || listaDeArchivos.length == 0)
                 System.out.println("No hay elementos dentro de la carpeta actual");
             else {
-                System.out.print("Archivos en el servidoro: \n");
+                System.out.print("Archivos en el servidor: \n");
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 for (File archivo : listaDeArchivos) {
-                    System.out.printf("%s (%s) - %d - %s%n",
+                    System.out.printf("- %s (%s) -- %d KB -- %s%n",
                             archivo.getName(),
-                            archivo.isDirectory() ? "Carpeta" : "Archivo",
-                            archivo.length(),
+                            archivo.isDirectory() ? "dir" : "file",
+                            archivo.length()/1024,
                             sdf.format(archivo.lastModified())
                     );
                 }
