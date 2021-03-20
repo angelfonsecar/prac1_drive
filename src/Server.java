@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 
 public class Server {
+    private String dirActual;
 
     public Server(){
         try{
@@ -15,27 +16,14 @@ public class Server {
             System.out.println("Servidor iniciado esperando por archivos...");
             File f = new File("");
             String ruta = f.getAbsolutePath();
-            String carpeta="archivos";
-            String ruta_archivos = ruta+"\\"+carpeta+"\\";
-            System.out.println("ruta:"+ruta_archivos);
-            File f2 = new File(ruta_archivos);
+            String carpeta="drive";
+            String raiz = ruta+"\\"+carpeta+"\\";
+            dirActual = raiz;
+            System.out.println("ruta:"+raiz);
+            File f2 = new File(raiz);
             f2.mkdirs();
             f2.setWritable(true);
-            File []listaDeArchivos = f2.listFiles();
-            if (listaDeArchivos == null || listaDeArchivos.length == 0)
-                System.out.println("No hay elementos dentro de la carpeta actual");
-            else {
-                System.out.print("Archivos en el servidor: \n");
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                for (File archivo : listaDeArchivos) {
-                    System.out.printf("- %s (%s) -- %d KB -- %s%n",
-                            archivo.getName(),
-                            archivo.isDirectory() ? "dir" : "file",
-                            archivo.length()/1024,
-                            sdf.format(archivo.lastModified())
-                    );
-                }
-            }
+            mostrarArchivos();
 
             for(;;){
                 Socket cl = s.accept();
@@ -44,7 +32,7 @@ public class Server {
                 String nombre = dis.readUTF();
                 long tam = dis.readLong();
                 System.out.println("Comienza descarga del archivo "+nombre+" de "+tam+" bytes\n\n");
-                DataOutputStream dos = new DataOutputStream(new FileOutputStream(ruta_archivos+nombre));
+                DataOutputStream dos = new DataOutputStream(new FileOutputStream(raiz+nombre));
                 long recibidos=0;
                 int l, porcentaje;
                 while(recibidos<tam){
@@ -65,6 +53,25 @@ public class Server {
 
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void mostrarArchivos(){
+        File f = new File(dirActual);
+        File []listaDeArchivos = f.listFiles();
+        if (listaDeArchivos == null || listaDeArchivos.length == 0)
+            System.out.println("No hay elementos dentro de la carpeta actual");
+        else {
+            System.out.print("Archivos en el servidor: \n");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            for (File archivo : listaDeArchivos) {
+                System.out.printf("- %s (%s) -- %d KB -- %s%n",
+                        archivo.getName(),
+                        archivo.isDirectory() ? "dir" : "file",
+                        archivo.length()/1024,
+                        sdf.format(archivo.lastModified())
+                );
+            }
         }
     }
 
