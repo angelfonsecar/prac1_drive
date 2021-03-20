@@ -26,7 +26,7 @@ public class Server {
             if (listaDeArchivos == null || listaDeArchivos.length == 0)
                 System.out.println("No hay elementos dentro de la carpeta actual");
             else {
-                System.out.print("Archivos en el servidor: \n");
+                System.out.print("Archivos en el servidoro: \n");
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 for (File archivo : listaDeArchivos) {
                     System.out.printf("%s (%s) - %d - %s%n",
