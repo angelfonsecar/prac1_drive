@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 
 public class Server {
     private String dirActual;
@@ -27,9 +26,38 @@ public class Server {
                 System.out.println("Cliente conectado desde "+cl.getInetAddress()+":"+cl.getPort());
                 //crear Streams
                 ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
+                ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
                 mostrarArchivos(oos);
+
                 //bucle de escucha de instrucciones
+                int elec = (int) ois.readObject();
+                switch (elec) {
+                    case 1: {
+                        //subirArchivo(cl);
+                        System.out.println("Lanzando FileChooser..");
+                        break;
+                    }
+                    case 2: {
+                        System.out.println("Aun no programo esto");
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("Ni esto");
+                        break;
+                    }
+                    case 4: {
+                        //eliminar archivo
+                        System.out.println("Tenemos que eliminar algo");
+                        break;
+                    }
+                    case 5: {
+                        System.out.println("o esto otro");
+                        break;
+                    }
+                }
+
                 oos.close();
+                ois.close();
 
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
                 String nombre = dis.readUTF();
@@ -63,21 +91,6 @@ public class Server {
         File f = new File(dirActual);
         File []listaDeArchivos = f.listFiles();
         oos.writeObject(listaDeArchivos);
-
-        /*if (listaDeArchivos == null || listaDeArchivos.length == 0)
-            System.out.println("No hay elementos dentro de la carpeta actual");
-        else {
-            System.out.print("Archivos en el servidor: \n");
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            for (File archivo : listaDeArchivos) {
-                System.out.printf("- %s (%s) -- %d KB -- %s%n",
-                        archivo.getName(),
-                        archivo.isDirectory() ? "dir" : "file",
-                        archivo.length()/1024,
-                        sdf.format(archivo.lastModified())
-                );
-            }
-        }*/
     }
 
     public static void main(String[] args){

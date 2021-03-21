@@ -11,47 +11,45 @@ public class Client {
             Socket cl = new Socket("127.0.0.1",8000);
             System.out.println("Conexion con servidor establecida...");
 
-            ObjectInputStream oos = new ObjectInputStream(cl.getInputStream());
-            File []listaDeArchivos = (File[]) oos.readObject();
-            mostrarArchivos(listaDeArchivos);//invoca mostrar archivos
-            
+            ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
+
+            File []listaDeArchivos = (File[]) ois.readObject();
+            mostrarArchivos(listaDeArchivos);
+
             int elec; //inicio de menu
             Scanner reader = new Scanner(System.in);
             do{
-                    System.out.println("Bienvenido a tu Drive, Que deseas hacer?\n1-Subir un archivo\n2-Subir una carpeta\n3-Eliminar un archivo\n4-Eliminar una carpeta\n5-Mostrar Archivos\n0-Salir\n\n>"); //ayuda
-                    elec= reader.nextInt();
-   
-                    switch (elec)
-                    {
-                        case 1: {
-                            //subirArchivo(c1);
-                            break;
-                        }
-                        case 2:
-                        {
-                            System.out.println("Aun no programo esto");
-                            break;
-                        }
-                        case 3:
-                        {
-                            System.out.println("Ni esto");
-                            break;
-                        }
-                        case 4:
-                        {
-                            System.out.println("o esto");
-                            break;
-                        }
-                        case 5:
-                        {
-                            System.out.println("o esto otro");
-                            break;
-                        }
-                   }
+                System.out.println("\nMenu\n1-Subir un archivo\n2-Subir una carpeta\n3-Descargar\n4-Eliminar un archivo\n5-Eliminar una carpeta\n6-Cambiar directorio\n0-Salir\n\n>"); //ayuda
+                elec= reader.nextInt();
+
+                oos.writeObject(elec);
+                switch (elec) {
+                    case 1: {
+                        subirArchivo(cl);
+                        System.out.println("Lanzando FileChooser..");
+                        break;
+                    }
+                    case 2: {
+                        System.out.println("Aun no programo esto");
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("Ni esto");
+                        break;
+                    }
+                    case 4: {
+                        //eliminar archivo
+                        System.out.println("Introduce el nombre del archivo pls: ");
+                        break;
+                    }
+                    case 5: {
+                        System.out.println("o esto otro");
+                        break;
+                    }
+                }
              }while(elec!=0);
 
-            System.out.println("Lanzando FileChooser..");
-            //subirArchivo(cl);
             cl.close();     //invocar hasta que queramos finalizar la conexión
 
         }catch(Exception e){
@@ -63,7 +61,7 @@ public class Client {
         if (listaDeArchivos == null || listaDeArchivos.length == 0)
             System.out.println("No hay elementos dentro de la carpeta actual");
         else {
-            System.out.print("Archivos en el drive: \n");
+            System.out.print("\nArchivos en el drive: \n");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             for (File archivo : listaDeArchivos) {
                 System.out.printf("- %s (%s) -- %d KB -- %s%n",
