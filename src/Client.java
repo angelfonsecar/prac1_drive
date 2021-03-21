@@ -12,7 +12,40 @@ public class Client {
 
             ObjectInputStream oos = new ObjectInputStream(cl.getInputStream());
             File []listaDeArchivos = (File[]) oos.readObject();
-            mostrarArchivos(listaDeArchivos);
+            mostrarArchivos(listaDeArchivos);//invoca mostrar archivos
+            
+            int elec; //inicio de menu
+            Scanner reader = new Scanner(System.in);
+            System.out.println("Bienvenido a tu Drive, Que deseas hacer?\n1-Subir un archivo\n2-Subir una carpeta\n3-Eliminar un archivo\n4-Eliminar una carpeta\n5-Mostrar Archivos\n\n>"); //ayuda
+            elec= reader.nextInt();
+
+            switch (elec)
+            {
+                case 1: {
+                    //subirArchivo(c1);
+                    break;
+                }
+                case 2:
+                {
+                    System.out.println("Aun no programo esto");
+                    break;
+                }
+                case 3:
+                {
+                    System.out.println("Ni esto");
+                    break;
+                }
+                case 4:
+                {
+                    System.out.println("o esto");
+                    break;
+                }
+                case 5:
+                {
+                    System.out.println("o esto otro");
+                    break;
+                }
+            }
 
             System.out.println("Lanzando FileChooser..");
             //subirArchivo(cl);
