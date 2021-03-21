@@ -36,7 +36,6 @@ public class Server {
                     if(elec==0) break;
                     switch (elec) {
                         case 1: {
-                            System.out.println("\nEl cliente quiere subir un archivo");
                             subir();
                             mostrarArchivos();
                             break;
@@ -78,10 +77,15 @@ public class Server {
 
     public void subir() throws IOException, ClassNotFoundException {
         File f = (File)ois.readObject();
-        if(f.isDirectory()) subirDir(f);
-        else subirArchivo(f);
+        if(f.isDirectory()) {
+            System.out.println("El cliente quiere subir carpeta");
+            subirDir(f);
+        }
+        else {
+            System.out.println("El cliente quiere subir un archivo");
+            subirArchivo(f);
+        }
     }
-
     public void subirArchivo(File f) throws IOException {
         long tam = f.length();
 
@@ -101,8 +105,11 @@ public class Server {
         System.out.println("Archivo recibido");
         dosf.close();
     }
-
     public void subirDir(File f){
+        System.out.println("carpeta a subir:"+f.getName());
+    }
+
+    public void cambiarDir(){
 
     }
 
