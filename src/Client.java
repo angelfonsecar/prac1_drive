@@ -26,7 +26,7 @@ public class Client {
                 elec= reader.nextInt();
                 oos.writeObject(elec);
                 switch (elec) {
-                    case 1: {   //subir archivo
+                    case 1: {   //subir archivo o carpeta
                         System.out.println("Lanzando JFileChooser...");
                         subir();
                         mostrarArchivos();
@@ -42,7 +42,7 @@ public class Client {
                         break;
                     }
                     case 4: {   //cambiar directorio
-                        System.out.println("o esto otro");
+                        System.out.println("");
                         cambiarDir();
                         break;
                     }
@@ -122,12 +122,18 @@ public class Client {
         System.out.println("Ingresa el nombre del archivo: ");
     }
 
-    public void cambiarDir(){   //estoy trabajando en este
+    public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
+        System.out.println("Nombre del dir: ");
+        Scanner reader = new Scanner(System.in);
         if(!dirActual.equals("drive")){
             //mostrar la opción de "atrás" o "volver a la raíz" (drive\)
-        }else {
-
+            System.out.println("Nombre del dir ( .. para volver al inicio): ");
         }
+        String elec = reader.nextLine();
+        oos.writeObject(elec);
+        oos.flush();
+        dirActual = dirActual + "\\" + elec;
+        mostrarArchivos();
     }
 
     public static void main(String[] args){

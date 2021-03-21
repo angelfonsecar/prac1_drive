@@ -35,26 +35,22 @@ public class Server {
                     int elec = (int) ois.readObject();
                     if(elec==0) break;
                     switch (elec) {
-                        case 1: {
+                        case 1: {   //subir archivo o carpeta
                             subir();
                             mostrarArchivos();
                             break;
                         }
                         case 2: {
-                            System.out.println("El cliente quiere subir una carpeta");
+                            System.out.println("El cliente quiere descargar");
                             break;
                         }
                         case 3: {
-                            System.out.println("Ni esto");
+                            System.out.println("Eliminar");
                             break;
                         }
                         case 4: {
-                            //eliminar archivo
-                            System.out.println("Tenemos que eliminar algo");
-                            break;
-                        }
-                        case 5: {
-                            System.out.println("o esto otro");
+                            System.out.println("cambiar dir");
+                            cambiarDir();
                             break;
                         }
                     }
@@ -78,11 +74,11 @@ public class Server {
     public void subir() throws IOException, ClassNotFoundException {
         File f = (File)ois.readObject();
         if(f.isDirectory()) {
-            System.out.println("El cliente quiere subir carpeta");
+            System.out.println("\nEl cliente quiere subir carpeta");
             subirDir(f);
         }
         else {
-            System.out.println("El cliente quiere subir un archivo");
+            System.out.println("\nEl cliente quiere subir un archivo");
             subirArchivo(f);
         }
     }
@@ -90,6 +86,7 @@ public class Server {
         long tam = f.length();
 
         System.out.println("Comienza descarga del archivo '"+f.getName()+"' de "+tam/1024+" kb");
+        System.out.println("Subiendo a "+dirActual);
         DataOutputStream dosf = new DataOutputStream(new FileOutputStream(dirActual+f.getName()));
 
         long recibidos=0;
@@ -109,8 +106,11 @@ public class Server {
         System.out.println("carpeta a subir:"+f.getName());
     }
 
-    public void cambiarDir(){   //estoy trabajando en este
-
+    public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
+        String elec = (String) ois.readObject();
+        System.out.println("Entrar a '"+elec+"'");
+        dirActual = dirActual + elec + "\\";
+        mostrarArchivos();
     }
 
     public static void main(String[] args){
