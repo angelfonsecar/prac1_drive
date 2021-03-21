@@ -28,6 +28,8 @@ public class Server {
                 //crear Streams
                 ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
                 mostrarArchivos(oos);
+                //bucle de escucha de instrucciones
+                oos.close();
 
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
                 String nombre = dis.readUTF();
@@ -62,7 +64,7 @@ public class Server {
         File []listaDeArchivos = f.listFiles();
         oos.writeObject(listaDeArchivos);
 
-        if (listaDeArchivos == null || listaDeArchivos.length == 0)
+        /*if (listaDeArchivos == null || listaDeArchivos.length == 0)
             System.out.println("No hay elementos dentro de la carpeta actual");
         else {
             System.out.print("Archivos en el servidor: \n");
@@ -75,7 +77,7 @@ public class Server {
                         sdf.format(archivo.lastModified())
                 );
             }
-        }
+        }*/
     }
 
     public static void main(String[] args){
