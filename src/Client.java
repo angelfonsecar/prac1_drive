@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 public class Client {
 
