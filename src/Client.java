@@ -122,7 +122,7 @@ public class Client {
         System.out.println("Ingresa el nombre del archivo: ");
     }
 
-    public void cambiarDir(){
+    public void cambiarDir(){   //estoy trabajando en este
         if(!dirActual.equals("drive")){
             //mostrar la opción de "atrás" o "volver a la raíz" (drive\)
         }else {

@@ -109,7 +109,7 @@ public class Server {
         System.out.println("carpeta a subir:"+f.getName());
     }
 
-    public void cambiarDir(){
+    public void cambiarDir(){   //estoy trabajando en este
 
     }
 
