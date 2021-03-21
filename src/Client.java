@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.Scanner;
 
 public class Client {
 
@@ -17,36 +16,38 @@ public class Client {
             
             int elec; //inicio de menu
             Scanner reader = new Scanner(System.in);
-            System.out.println("Bienvenido a tu Drive, Que deseas hacer?\n1-Subir un archivo\n2-Subir una carpeta\n3-Eliminar un archivo\n4-Eliminar una carpeta\n5-Mostrar Archivos\n\n>"); //ayuda
-            elec= reader.nextInt();
-
-            switch (elec)
-            {
-                case 1: {
-                    //subirArchivo(c1);
-                    break;
-                }
-                case 2:
-                {
-                    System.out.println("Aun no programo esto");
-                    break;
-                }
-                case 3:
-                {
-                    System.out.println("Ni esto");
-                    break;
-                }
-                case 4:
-                {
-                    System.out.println("o esto");
-                    break;
-                }
-                case 5:
-                {
-                    System.out.println("o esto otro");
-                    break;
-                }
-            }
+            do{
+                    System.out.println("Bienvenido a tu Drive, Que deseas hacer?\n1-Subir un archivo\n2-Subir una carpeta\n3-Eliminar un archivo\n4-Eliminar una carpeta\n5-Mostrar Archivos\n0-Salir\n\n>"); //ayuda
+                    elec= reader.nextInt();
+   
+                    switch (elec)
+                    {
+                        case 1: {
+                            //subirArchivo(c1);
+                            break;
+                        }
+                        case 2:
+                        {
+                            System.out.println("Aun no programo esto");
+                            break;
+                        }
+                        case 3:
+                        {
+                            System.out.println("Ni esto");
+                            break;
+                        }
+                        case 4:
+                        {
+                            System.out.println("o esto");
+                            break;
+                        }
+                        case 5:
+                        {
+                            System.out.println("o esto otro");
+                            break;
+                        }
+                   }
+             }while(elec!=0);
 
             System.out.println("Lanzando FileChooser..");
             //subirArchivo(cl);
