@@ -5,14 +5,17 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class Client {
+    private String dirActual = "Drive";
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public Client(){
         try{
             Socket cl = new Socket("127.0.0.1",8000);
             System.out.println("Conexion con servidor establecida...");
 
-            ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
+            oos = new ObjectOutputStream(cl.getOutputStream());
+            ois = new ObjectInputStream(cl.getInputStream());
 
             File []listaDeArchivos = (File[]) ois.readObject();
             mostrarArchivos(listaDeArchivos);
@@ -26,8 +29,8 @@ public class Client {
                 oos.writeObject(elec);
                 switch (elec) {
                     case 1: {
-                        subirArchivo(cl);
-                        System.out.println("Lanzando FileChooser..");
+                        System.out.println("Lanzando JFileChooser..");
+                        subirArchivo();
                         break;
                     }
                     case 2: {
@@ -49,7 +52,8 @@ public class Client {
                     }
                 }
              }while(elec!=0);
-
+            oos.close();
+            ois.close();
             cl.close();     //invocar hasta que queramos finalizar la conexión
 
         }catch(Exception e){
@@ -61,7 +65,7 @@ public class Client {
         if (listaDeArchivos == null || listaDeArchivos.length == 0)
             System.out.println("No hay elementos dentro de la carpeta actual");
         else {
-            System.out.print("\nArchivos en el drive: \n");
+            System.out.print("\n****Archivos en "+dirActual+"\n\n");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             for (File archivo : listaDeArchivos) {
                 System.out.printf("- %s (%s) -- %d KB -- %s%n",
@@ -74,7 +78,28 @@ public class Client {
         }
     }
 
-    public void subirArchivo(Socket cl){
+    public void subirArchivo(){
+        try {
+            JFileChooser jf = new JFileChooser();
+            //jf.setMultiSelectionEnabled(true);
+            int r = jf.showOpenDialog(null);
+            if(r==JFileChooser.APPROVE_OPTION){
+                File f = jf.getSelectedFile();
+                String nombre = f.getName();
+                long tam = f.length();
+                System.out.println("Preparandose pare enviar archivo "+nombre+" de "+tam/1024+" kb");
+//                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
+//                DataInputStream dis = new DataInputStream(new FileInputStream(path));
+//                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+                oos.writeObject(f);
+                oos.flush();
+                System.out.println("\nArchivo enviado");
+            }//if
+        }catch(Exception e){
+            e.printStackTrace();
+        }//catch
+
+    /*public void subirArchivoProfe(Socket cl){
         try {
             JFileChooser jf = new JFileChooser();
             //jf.setMultiSelectionEnabled(true);
@@ -110,7 +135,7 @@ public class Client {
             }//if
         }catch(Exception e){
             e.printStackTrace();
-        }//catch
+        }//catch*/
 
     }
 

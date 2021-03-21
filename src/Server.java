@@ -4,6 +4,8 @@ import java.net.Socket;
 
 public class Server {
     private String dirActual;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public Server(){
         try{
@@ -25,41 +27,43 @@ public class Server {
                 Socket cl = s.accept();
                 System.out.println("Cliente conectado desde "+cl.getInetAddress()+":"+cl.getPort());
                 //crear Streams
-                ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
-                mostrarArchivos(oos);
+                oos = new ObjectOutputStream(cl.getOutputStream());
+                ois = new ObjectInputStream(cl.getInputStream());
+                mostrarArchivos();
 
-                //bucle de escucha de instrucciones
-                int elec = (int) ois.readObject();
-                switch (elec) {
-                    case 1: {
-                        //subirArchivo(cl);
-                        System.out.println("Lanzando FileChooser..");
-                        break;
-                    }
-                    case 2: {
-                        System.out.println("Aun no programo esto");
-                        break;
-                    }
-                    case 3: {
-                        System.out.println("Ni esto");
-                        break;
-                    }
-                    case 4: {
-                        //eliminar archivo
-                        System.out.println("Tenemos que eliminar algo");
-                        break;
-                    }
-                    case 5: {
-                        System.out.println("o esto otro");
-                        break;
+
+                while(true){//bucle de escucha de instrucciones
+                    int elec = (int) ois.readObject();
+                    if(elec==0) break;
+                    switch (elec) {
+                        case 1: {
+                            System.out.println("El cliente quiere subir un archivo");
+                            subirArchivo();
+                            break;
+                        }
+                        case 2: {
+                            System.out.println("El cliente quiere subir una carpeta");
+                            break;
+                        }
+                        case 3: {
+                            System.out.println("Ni esto");
+                            break;
+                        }
+                        case 4: {
+                            //eliminar archivo
+                            System.out.println("Tenemos que eliminar algo");
+                            break;
+                        }
+                        case 5: {
+                            System.out.println("o esto otro");
+                            break;
+                        }
                     }
                 }
-
                 oos.close();
                 ois.close();
 
-                DataInputStream dis = new DataInputStream(cl.getInputStream());
+                /*DataInputStream dis = new DataInputStream(cl.getInputStream());
                 String nombre = dis.readUTF();
                 long tam = dis.readLong();
                 System.out.println("Comienza descarga del archivo "+nombre+" de "+tam+" bytes\n\n");
@@ -78,7 +82,7 @@ public class Server {
                 }//while
                 System.out.println("Archivo recibido..");
                 dos.close();
-                dis.close();
+                dis.close();*/
                 cl.close();
             }//for
 
@@ -87,10 +91,23 @@ public class Server {
         }
     }
 
-    public void mostrarArchivos(ObjectOutputStream oos) throws IOException {
+    public void mostrarArchivos() throws IOException {
         File f = new File(dirActual);
         File []listaDeArchivos = f.listFiles();
         oos.writeObject(listaDeArchivos);
+    }
+
+    public void subirArchivo() throws IOException, ClassNotFoundException {
+        File f = (File)ois.readObject();
+        String nombre = f.getName();
+        long tam = f.length();
+
+        System.out.println("Comienza descarga del archivo '"+nombre+"' de "+tam/1024+" kb\n\n");
+        ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream(dirActual+nombre));
+        oosf.writeObject(f);
+        oosf.flush();
+        System.out.println("Archivo recibido");
+        oosf.close();
     }
 
     public static void main(String[] args){
