@@ -28,7 +28,7 @@ public class Client {
                 switch (elec) {
                     case 1: {   //subir archivo
                         System.out.println("Lanzando JFileChooser...");
-                        subirArchivo();
+                        subir();
                         mostrarArchivos();
                         break;
                     }
@@ -64,9 +64,9 @@ public class Client {
     public void mostrarArchivos() throws IOException, ClassNotFoundException {
         File []listaDeArchivos = (File[]) ois.readObject();
         if (listaDeArchivos == null || listaDeArchivos.length == 0)
-            System.out.println("No hay elementos dentro de la carpeta actual");
+            System.out.println("Directorio vacio");
         else {
-            System.out.print("\n****Archivos en "+dirActual+"\n\n");
+            System.out.print("\n****Archivos en "+dirActual+"****"+"\n\n");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             for (File archivo : listaDeArchivos) {
                 System.out.printf("- %s (%s) -- %d KB -- %s%n",
@@ -79,36 +79,46 @@ public class Client {
         }
     }
 
-    public void subirArchivo(){
+    public void subir(){
         try {
             JFileChooser jf = new JFileChooser();
             //jf.setMultiSelectionEnabled(true);
+            //jf.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);  //para integrar en una sola opcion del menú el subir archivos y carpetas
             int r = jf.showOpenDialog(null);
             if(r==JFileChooser.APPROVE_OPTION){
                 File f = jf.getSelectedFile();
-                String nombre = f.getName();
-                String path = f.getAbsolutePath();
-                long tam = f.length();
-                System.out.println("Preparandose pare enviar archivo '"+nombre+"' de "+tam/1024+" kb");
-                oos.writeObject(f);
-                oos.flush();
 
-                DataInputStream disf = new DataInputStream(new FileInputStream(path));
-                long enviados = 0;
-                int l;
-                while (enviados<tam){
-                    byte[] b = new byte[1500];
-                    l=disf.read(b);
-                    oos.write(b, 0, l);
-                    oos.flush();
-                    enviados += l;
-                }
-                disf.close();
-                System.out.println("Archivo enviado");
-            }//if
+                if(f.isDirectory()) subirDir(f);
+                else subirArchivo(f);
+
+            }
         }catch(Exception e){
             e.printStackTrace();
         }//catch
+    }
+
+    public void subirArchivo(File f) throws IOException {
+        long tam = f.length();
+        System.out.println("Preparandose para enviar archivo '"+f.getName()+"' de "+tam/1024+" kb");
+        oos.writeObject(f);
+        oos.flush();
+
+        DataInputStream disf = new DataInputStream(new FileInputStream(f.getAbsolutePath()));
+        long enviados = 0;
+        int l;
+        while (enviados<tam){
+            byte[] b = new byte[1500];
+            l=disf.read(b);
+            oos.write(b, 0, l);
+            oos.flush();
+            enviados += l;
+        }
+        disf.close();
+        System.out.println("Archivo enviado");
+    }
+
+    public void subirDir(File f){
+
     }
 
     public void descargar(){

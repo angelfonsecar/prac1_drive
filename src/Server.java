@@ -31,14 +31,13 @@ public class Server {
                 ois = new ObjectInputStream(cl.getInputStream());
                 mostrarArchivos();
 
-
                 while(true){//bucle de escucha de instrucciones
                     int elec = (int) ois.readObject();
                     if(elec==0) break;
                     switch (elec) {
                         case 1: {
-                            System.out.println("El cliente quiere subir un archivo");
-                            subirArchivo();
+                            System.out.println("\nEl cliente quiere subir un archivo");
+                            subir();
                             mostrarArchivos();
                             break;
                         }
@@ -77,13 +76,17 @@ public class Server {
         oos.writeObject(listaDeArchivos);
     }
 
-    public void subirArchivo() throws IOException, ClassNotFoundException {
+    public void subir() throws IOException, ClassNotFoundException {
         File f = (File)ois.readObject();
-        String nombre = f.getName();
+        if(f.isDirectory()) subirDir(f);
+        else subirArchivo(f);
+    }
+
+    public void subirArchivo(File f) throws IOException {
         long tam = f.length();
 
-        System.out.println("Comienza descarga del archivo '"+nombre+"' de "+tam/1024+" kb\n\n");
-        DataOutputStream dosf = new DataOutputStream(new FileOutputStream(dirActual+nombre));
+        System.out.println("Comienza descarga del archivo '"+f.getName()+"' de "+tam/1024+" kb");
+        DataOutputStream dosf = new DataOutputStream(new FileOutputStream(dirActual+f.getName()));
 
         long recibidos=0;
         int l;
@@ -97,6 +100,10 @@ public class Server {
 
         System.out.println("Archivo recibido");
         dosf.close();
+    }
+
+    public void subirDir(File f){
+
     }
 
     public static void main(String[] args){
