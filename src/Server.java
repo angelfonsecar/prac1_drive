@@ -1,7 +1,4 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -23,11 +20,15 @@ public class Server {
             File f2 = new File(raiz);
             f2.mkdirs();
             f2.setWritable(true);
-            mostrarArchivos();
+
 
             for(;;){
                 Socket cl = s.accept();
                 System.out.println("Cliente conectado desde "+cl.getInetAddress()+":"+cl.getPort());
+                //crear Streams
+                ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
+                mostrarArchivos(oos);
+
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
                 String nombre = dis.readUTF();
                 long tam = dis.readLong();
@@ -56,9 +57,11 @@ public class Server {
         }
     }
 
-    public void mostrarArchivos(){
+    public void mostrarArchivos(ObjectOutputStream oos) throws IOException {
         File f = new File(dirActual);
         File []listaDeArchivos = f.listFiles();
+        oos.writeObject(listaDeArchivos);
+
         if (listaDeArchivos == null || listaDeArchivos.length == 0)
             System.out.println("No hay elementos dentro de la carpeta actual");
         else {

@@ -1,23 +1,43 @@
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 
 public class Client {
 
     public Client(){
         try{
-            int pto = 8000;
-            String dir = "127.0.0.1";
-            Socket cl = new Socket(dir,pto);
-            System.out.println("Conexion con servidor establecida.. lanzando FileChooser..");
-            subirArchivo(cl);
+            Socket cl = new Socket("127.0.0.1",8000);
+            System.out.println("Conexion con servidor establecida...");
+
+            ObjectInputStream oos = new ObjectInputStream(cl.getInputStream());
+            File []listaDeArchivos = (File[]) oos.readObject();
+            mostrarArchivos(listaDeArchivos);
+
+            System.out.println("Lanzando FileChooser..");
+            //subirArchivo(cl);
+            cl.close();     //invocar hasta que queramos finalizar la conexión
 
         }catch(Exception e){
             e.printStackTrace();
         }//catch
+    }
+
+    public void mostrarArchivos(File []listaDeArchivos){
+        if (listaDeArchivos == null || listaDeArchivos.length == 0)
+            System.out.println("No hay elementos dentro de la carpeta actual");
+        else {
+            System.out.print("Archivos en el drive: \n");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            for (File archivo : listaDeArchivos) {
+                System.out.printf("- %s (%s) -- %d KB -- %s%n",
+                        archivo.getName(),
+                        archivo.isDirectory() ? "dir" : "file",
+                        archivo.length()/1024,
+                        sdf.format(archivo.lastModified())
+                );
+            }
+        }
     }
 
     public void subirArchivo(Socket cl){
@@ -52,7 +72,7 @@ public class Client {
                 System.out.println("\nArchivo enviado..");
                 dis.close();
                 dos.close();
-                cl.close();
+
             }//if
         }catch(Exception e){
             e.printStackTrace();
