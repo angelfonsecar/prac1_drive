@@ -26,7 +26,7 @@ public class Server {
             for(;;){
                 Socket cl = s.accept();
                 System.out.println("Cliente conectado desde "+cl.getInetAddress()+":"+cl.getPort());
-                //crear Streams
+
                 oos = new ObjectOutputStream(cl.getOutputStream());
                 ois = new ObjectInputStream(cl.getInputStream());
                 mostrarArchivos();
@@ -39,6 +39,7 @@ public class Server {
                         case 1: {
                             System.out.println("El cliente quiere subir un archivo");
                             subirArchivo();
+                            mostrarArchivos();
                             break;
                         }
                         case 2: {
@@ -62,27 +63,6 @@ public class Server {
                 }
                 oos.close();
                 ois.close();
-
-                /*DataInputStream dis = new DataInputStream(cl.getInputStream());
-                String nombre = dis.readUTF();
-                long tam = dis.readLong();
-                System.out.println("Comienza descarga del archivo "+nombre+" de "+tam+" bytes\n\n");
-                DataOutputStream dos = new DataOutputStream(new FileOutputStream(raiz+nombre));
-                long recibidos=0;
-                int l, porcentaje;
-                while(recibidos<tam){
-                    byte[] b = new byte[1500];
-                    l = dis.read(b);
-                    System.out.println("leidos: "+l);
-                    dos.write(b,0,l);
-                    dos.flush();
-                    recibidos = recibidos + l;
-                    porcentaje = (int)((recibidos*100)/tam);
-                    System.out.print("\rRecibido el "+ porcentaje +" % del archivo");
-                }//while
-                System.out.println("Archivo recibido..");
-                dos.close();
-                dis.close();*/
                 cl.close();
             }//for
 
@@ -103,11 +83,20 @@ public class Server {
         long tam = f.length();
 
         System.out.println("Comienza descarga del archivo '"+nombre+"' de "+tam/1024+" kb\n\n");
-        ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream(dirActual+nombre));
-        oosf.writeObject(f);
-        oosf.flush();
+        DataOutputStream dosf = new DataOutputStream(new FileOutputStream(dirActual+nombre));
+
+        long recibidos=0;
+        int l;
+        while(recibidos<tam){
+            byte[] b = new byte[1500];
+            l = ois.read(b,0,b.length);
+            dosf.write(b,0,l);
+            dosf.flush();
+            recibidos += l;
+        }//while
+
         System.out.println("Archivo recibido");
-        oosf.close();
+        dosf.close();
     }
 
     public static void main(String[] args){

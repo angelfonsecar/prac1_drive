@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class Client {
-    private String dirActual = "Drive";
+    private String dirActual = "drive";
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
@@ -17,37 +17,37 @@ public class Client {
             oos = new ObjectOutputStream(cl.getOutputStream());
             ois = new ObjectInputStream(cl.getInputStream());
 
-            File []listaDeArchivos = (File[]) ois.readObject();
-            mostrarArchivos(listaDeArchivos);
+            mostrarArchivos();
 
             int elec; //inicio de menu
             Scanner reader = new Scanner(System.in);
             do{
-                System.out.println("\nMenu\n1-Subir un archivo\n2-Subir una carpeta\n3-Descargar\n4-Eliminar un archivo\n5-Eliminar una carpeta\n6-Cambiar directorio\n0-Salir\n\n>"); //ayuda
+                System.out.println("\nMenu\n1-Subir un archivo\n2-Subir una carpeta\n3-Descargar\n4-Eliminar un archivo o carpeta\n5-Cambiar directorio\n0-Salir\n\n>"); //ayuda
                 elec= reader.nextInt();
-
                 oos.writeObject(elec);
                 switch (elec) {
-                    case 1: {
-                        System.out.println("Lanzando JFileChooser..");
+                    case 1: {   //subir archivo
+                        System.out.println("Lanzando JFileChooser...");
                         subirArchivo();
+                        mostrarArchivos();
                         break;
                     }
-                    case 2: {
-                        System.out.println("Aun no programo esto");
+                    case 2: {   //subir carpeta
+                        System.out.println("Subir carpeta");
                         break;
                     }
-                    case 3: {
-                        System.out.println("Ni esto");
+                    case 3: {   //descargar un archivo o carpeta
+                        System.out.println("Descargar un archivo o carpeta");
+                        descargar();
                         break;
                     }
-                    case 4: {
-                        //eliminar archivo
+                    case 4: {   //eliminar archivo o carpeta
                         System.out.println("Introduce el nombre del archivo pls: ");
                         break;
                     }
-                    case 5: {
+                    case 5: {   //cambiar directorio
                         System.out.println("o esto otro");
+                        cambiarDir();
                         break;
                     }
                 }
@@ -61,7 +61,8 @@ public class Client {
         }//catch
     }
 
-    public void mostrarArchivos(File []listaDeArchivos){
+    public void mostrarArchivos() throws IOException, ClassNotFoundException {
+        File []listaDeArchivos = (File[]) ois.readObject();
         if (listaDeArchivos == null || listaDeArchivos.length == 0)
             System.out.println("No hay elementos dentro de la carpeta actual");
         else {
@@ -86,57 +87,40 @@ public class Client {
             if(r==JFileChooser.APPROVE_OPTION){
                 File f = jf.getSelectedFile();
                 String nombre = f.getName();
+                String path = f.getAbsolutePath();
                 long tam = f.length();
-                System.out.println("Preparandose pare enviar archivo "+nombre+" de "+tam/1024+" kb");
-//                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
-//                DataInputStream dis = new DataInputStream(new FileInputStream(path));
-//                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+                System.out.println("Preparandose pare enviar archivo '"+nombre+"' de "+tam/1024+" kb");
                 oos.writeObject(f);
                 oos.flush();
-                System.out.println("\nArchivo enviado");
+
+                DataInputStream disf = new DataInputStream(new FileInputStream(path));
+                long enviados = 0;
+                int l;
+                while (enviados<tam){
+                    byte[] b = new byte[1500];
+                    l=disf.read(b);
+                    oos.write(b, 0, l);
+                    oos.flush();
+                    enviados += l;
+                }
+                disf.close();
+                System.out.println("Archivo enviado");
             }//if
         }catch(Exception e){
             e.printStackTrace();
         }//catch
+    }
 
-    /*public void subirArchivoProfe(Socket cl){
-        try {
-            JFileChooser jf = new JFileChooser();
-            //jf.setMultiSelectionEnabled(true);
-            int r = jf.showOpenDialog(null);
-            if(r==JFileChooser.APPROVE_OPTION){
-                File f = jf.getSelectedFile();
-                String nombre = f.getName();
-                String path = f.getAbsolutePath();
-                long tam = f.length();
-                System.out.println("Preparandose pare enviar archivo "+path+" de "+tam+" bytes\n\n");
-                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
-                DataInputStream dis = new DataInputStream(new FileInputStream(path));
-                dos.writeUTF(nombre);
-                dos.flush();
-                dos.writeLong(tam);
-                dos.flush();
-                long enviados = 0;
-                int l,porcentaje;
-                while(enviados<tam){
-                    byte[] b = new byte[1500];
-                    l=dis.read(b);
-                    System.out.println("enviados: "+l);
-                    dos.write(b,0,l);
-                    dos.flush();
-                    enviados = enviados + l;
-                    porcentaje = (int)((enviados*100)/tam);
-                    System.out.print("\rEnviado el "+porcentaje+" % del archivo");
-                }//while
-                System.out.println("\nArchivo enviado..");
-                dis.close();
-                dos.close();
+    public void descargar(){
+        System.out.println("Ingresa el nombre del archivo: ");
+    }
 
-            }//if
-        }catch(Exception e){
-            e.printStackTrace();
-        }//catch*/
+    public void cambiarDir(){
+        if(!dirActual.equals("drive")){
+            //mostrar la opción de "atrás" o "volver a la raíz" (drive\)
+        }else {
 
+        }
     }
 
     public static void main(String[] args){
