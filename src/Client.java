@@ -131,30 +131,28 @@ public class Client {
     }
 
     public void eliminar(){     //trabajo en este
-        File []listaDeArchivos = (File[]) ois.readObject();//leer lista de archivos
+        /*File []listaDeArchivos = (File[]) ois.readObject();//leer lista de archivos
 
         Scanner reader = new Scanner(System.in);
         System.out.println("Archivo o dir a eliminar: ");
-        String elec = reader.nextLine();
+        String elec = reader.nextLine();*/
+
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {
         Scanner reader = new Scanner(System.in);
 
-        String []listaDeDir = (String[]) ois.readObject(); //leer la lista de directorios
-        System.out.println("Dirs: " + Arrays.toString(listaDeDir));
         System.out.println("Nombre del dir: ");
         if(!dirActual.equals("drive"))  //mostrar la opción de "atrás" para volver a la raíz (drive\)
             System.out.println("( .. para volver al inicio )");
 
         String elec = reader.nextLine();
-        if(!Arrays.asList(listaDeDir).contains(elec) && !elec.equals("..")){  //comprobamos que el directorio solicitado existe
+        oos.writeObject(elec);
+        oos.flush();
+        if(!(boolean)ois.readObject()){
             elec = "";
             System.out.println("Dir invalido");
         }
-
-        oos.writeObject(elec);
-        oos.flush();
         if(elec.equals(".."))
             dirActual = "drive";
         else if(!elec.equals(""))

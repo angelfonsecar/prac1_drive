@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Server {
@@ -48,6 +49,7 @@ public class Server {
                         }
                         case 3: {
                             System.out.println("Eliminar");
+                            eliminar();
                             break;
                         }
                         case 4: {
@@ -110,14 +112,20 @@ public class Server {
 
     public void eliminar() throws IOException {     //trabajo en este
         mostrarArchivos();
+
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
         File f = new File(dirActual);
         String []listaDeDir = f.list((dir, name) -> new File(dir, name).isDirectory()); //obtenemos la lista de directorios
-        oos.writeObject(listaDeDir);    //enviamos la lista de dir
 
         String elec = (String) ois.readObject();
+        boolean existeDir = Arrays.asList(listaDeDir).contains(elec) || elec.equals("..");
+        if(!existeDir){  //comprobamos que el directorio solicitado existe
+            elec = "";
+            System.out.println("Dir invalido");
+        }
+        oos.writeObject(existeDir);
         System.out.println("Entrar a '"+elec+"'");
         if(elec.equals("..")){
             dirActual = raiz;
