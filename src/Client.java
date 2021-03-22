@@ -136,13 +136,11 @@ public class Client {
 
         String []listaDeDir = (String[]) ois.readObject(); //leer la lista de directorios
         System.out.println("Dirs: " + Arrays.toString(listaDeDir));
-
         System.out.println("Nombre del dir: ");
         if(!dirActual.equals("drive"))  //mostrar la opción de "atrás" para volver a la raíz (drive\)
-            System.out.println("( .. para volver al inicio)");
+            System.out.println("( .. para volver al inicio )");
 
         String elec = reader.nextLine();
-
         if(!Arrays.asList(listaDeDir).contains(elec) && !elec.equals("..")){  //comprobamos que el directorio solicitado existe
             elec = "";
             System.out.println("Dir invalido");
