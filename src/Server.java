@@ -4,6 +4,7 @@ import java.net.Socket;
 
 public class Server {
     private String dirActual;
+    private String raiz;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
@@ -15,7 +16,7 @@ public class Server {
             File f = new File("");
             String ruta = f.getAbsolutePath();
             String carpeta="drive";
-            String raiz = ruta+"\\"+carpeta+"\\";
+            raiz = ruta+"\\"+carpeta+"\\";
             dirActual = raiz;
             System.out.println("ruta:"+raiz);
             File f2 = new File(raiz);
@@ -109,7 +110,11 @@ public class Server {
     public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
         String elec = (String) ois.readObject();
         System.out.println("Entrar a '"+elec+"'");
-        dirActual = dirActual + elec + "\\";
+        if(elec.equals("..")){
+            dirActual = raiz;
+        }else{
+            dirActual = dirActual + elec + "\\";
+        }
         mostrarArchivos();
     }
 

@@ -65,12 +65,21 @@ public class Client {
             System.out.print("\n**** Archivos en "+dirActual+" ****"+"\n\n");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             for (File archivo : listaDeArchivos) {
-                System.out.printf("- %s (%s) -- %d KB -- %s%n",
-                        archivo.getName(),
-                        archivo.isDirectory() ? "dir" : "file",
-                        archivo.length()/1024,
-                        sdf.format(archivo.lastModified())
-                );
+                if(archivo.isDirectory())
+                    System.out.printf("- (%s) %s  -- %s%n",
+                            archivo.isDirectory() ? "dir" : "file",
+                            archivo.getName(),
+                            sdf.format(archivo.lastModified())
+                    );
+            }
+            for (File archivo : listaDeArchivos) {
+                if(!archivo.isDirectory())
+                    System.out.printf("- (%s) %s -- %d kb -- %s%n",
+                            archivo.isDirectory() ? "dir" : "file",
+                            archivo.getName(),
+                            archivo.length()/1024,
+                            sdf.format(archivo.lastModified())
+                    );
             }
         }
     }
@@ -94,7 +103,7 @@ public class Client {
     }
     public void subirArchivo(File f) throws IOException {
         long tam = f.length();
-        System.out.println("Preparandose para enviar archivo '"+f.getName()+"' de "+tam/1024+" kb");
+        System.out.println("Enviando '"+f.getName()+"' de "+tam/1024+" kb");
         oos.writeObject(f);
         oos.flush();
 
@@ -122,17 +131,20 @@ public class Client {
         System.out.println("Ingresa el nombre del archivo: ");
     }
 
-    public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
-        System.out.println("Nombre del dir: ");
+    public void cambiarDir() throws IOException, ClassNotFoundException {
         Scanner reader = new Scanner(System.in);
-        if(!dirActual.equals("drive")){
-            //mostrar la opción de "atrás" o "volver a la raíz" (drive\)
-            System.out.println("Nombre del dir ( .. para volver al inicio): ");
-        }
+        System.out.println("Nombre del dir: ");
+
+        if(!dirActual.equals("drive"))  //mostrar la opción de "atrás" para volver a la raíz (drive\)
+            System.out.println("( .. para volver al inicio)");
+
         String elec = reader.nextLine();
         oos.writeObject(elec);
         oos.flush();
-        dirActual = dirActual + "\\" + elec;
+        if(elec.equals(".."))
+            dirActual = "drive";
+        else
+            dirActual = dirActual + "\\" + elec;
         mostrarArchivos();
     }
 
