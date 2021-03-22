@@ -66,16 +66,14 @@ public class Client {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             for (File archivo : listaDeArchivos) {
                 if(archivo.isDirectory())
-                    System.out.printf("- (%s) %s  -- %s%n",
-                            archivo.isDirectory() ? "dir" : "file",
+                    System.out.printf("- (dir) %s  -- %s%n",
                             archivo.getName(),
                             sdf.format(archivo.lastModified())
                     );
             }
             for (File archivo : listaDeArchivos) {
                 if(!archivo.isDirectory())
-                    System.out.printf("- (%s) %s -- %d kb -- %s%n",
-                            archivo.isDirectory() ? "dir" : "file",
+                    System.out.printf("- (file) %s -- %d kb -- %s%n",
                             archivo.getName(),
                             archivo.length()/1024,
                             sdf.format(archivo.lastModified())
