@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Client {
@@ -42,7 +43,6 @@ public class Client {
                         break;
                     }
                     case 4: {   //cambiar directorio
-                        System.out.println("");
                         cambiarDir();
                         break;
                     }
@@ -133,17 +133,26 @@ public class Client {
 
     public void cambiarDir() throws IOException, ClassNotFoundException {
         Scanner reader = new Scanner(System.in);
-        System.out.println("Nombre del dir: ");
 
+        String []listaDeDir = (String[]) ois.readObject(); //leer la lista de directorios
+        System.out.println("Dirs: " + Arrays.toString(listaDeDir));
+
+        System.out.println("Nombre del dir: ");
         if(!dirActual.equals("drive"))  //mostrar la opción de "atrás" para volver a la raíz (drive\)
             System.out.println("( .. para volver al inicio)");
 
         String elec = reader.nextLine();
+
+        if(!Arrays.asList(listaDeDir).contains(elec) && !elec.equals("..")){  //comprobamos que el directorio solicitado existe
+            elec = "";
+            System.out.println("Dir invalido");
+        }
+
         oos.writeObject(elec);
         oos.flush();
         if(elec.equals(".."))
             dirActual = "drive";
-        else
+        else if(!elec.equals(""))
             dirActual = dirActual + "\\" + elec;
         mostrarArchivos();
     }

@@ -108,11 +108,15 @@ public class Server {
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
+        File f = new File(dirActual);
+        String []listaDeDir = f.list((dir, name) -> new File(dir, name).isDirectory());     //obtenemos la lista de directorios
+        oos.writeObject(listaDeDir);    //enviamos la lista de dir
+
         String elec = (String) ois.readObject();
         System.out.println("Entrar a '"+elec+"'");
         if(elec.equals("..")){
             dirActual = raiz;
-        }else{
+        }else if(!elec.equals("")){
             dirActual = dirActual + elec + "\\";
         }
         mostrarArchivos();
