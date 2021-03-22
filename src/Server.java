@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server {
     private String dirActual;
@@ -105,6 +106,10 @@ public class Server {
     }
     public void subirDir(File f){
         System.out.println("carpeta a subir:"+f.getName());
+    }
+
+    public void eliminar() throws IOException {     //trabajo en este
+        mostrarArchivos();
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este

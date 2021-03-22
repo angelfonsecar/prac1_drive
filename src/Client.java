@@ -39,7 +39,8 @@ public class Client {
                         break;
                     }
                     case 3: {   //eliminar archivo o carpeta
-                        System.out.println("Introduce el nombre del archivo pls: ");
+                        System.out.println("Eliminar");
+                        eliminar();
                         break;
                     }
                     case 4: {   //cambiar directorio
@@ -127,6 +128,14 @@ public class Client {
 
     public void descargar(){
         System.out.println("Ingresa el nombre del archivo: ");
+    }
+
+    public void eliminar(){     //trabajo en este
+        File []listaDeArchivos = (File[]) ois.readObject();//leer lista de archivos
+
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Archivo o dir a eliminar: ");
+        String elec = reader.nextLine();
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {
