@@ -1,8 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class Server {
     private String dirActual;
@@ -48,8 +46,8 @@ public class Server {
                             break;
                         }
                         case 3: {
-                            System.out.println("Eliminar");
                             eliminar();
+                            mostrarArchivos();
                             break;
                         }
                         case 4: {
@@ -110,17 +108,39 @@ public class Server {
         System.out.println("carpeta a subir:"+f.getName());
     }
 
-    public void eliminar() throws IOException {     //trabajo en este
-        mostrarArchivos();
-
+    public void eliminar() throws IOException, ClassNotFoundException {     //trabajo en este
+        String elec = (String) ois.readObject();
+        File fileToDelete = new File(dirActual+"\\"+elec);
+        if(fileToDelete.exists()){
+            System.out.println("eliminando "+fileToDelete.getAbsolutePath());
+            if (!fileToDelete.isDirectory()) {  //eliminar archivo
+                if(fileToDelete.delete())
+                    oos.writeObject("Archivo eliminado");
+                else
+                    oos.writeObject("Error al eliminar archivo");
+            }
+            else {        //eliminar directorio
+                if(deleteDirectory(fileToDelete))
+                    oos.writeObject("Dir eliminado");
+                else
+                    oos.writeObject("Error al eliminar dir");
+            }
+        }else oos.writeObject("El archivo o dir no existe");
+    }
+    boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents)
+                deleteDirectory(file);
+        }
+        return directoryToBeDeleted.delete();
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {   //estoy trabajando en este
-        File f = new File(dirActual);
-        String []listaDeDir = f.list((dir, name) -> new File(dir, name).isDirectory()); //obtenemos la lista de directorios
-
         String elec = (String) ois.readObject();
-        boolean existeDir = Arrays.asList(listaDeDir).contains(elec) || elec.equals("..");
+        File f = new File(dirActual+"\\"+elec);
+
+        boolean existeDir = f.isDirectory() || elec.equals("..");
         if(!existeDir){  //comprobamos que el directorio solicitado existe
             elec = "";
             System.out.println("Dir invalido");

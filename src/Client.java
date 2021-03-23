@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Client {
@@ -41,6 +40,7 @@ public class Client {
                     case 3: {   //eliminar archivo o carpeta
                         System.out.println("Eliminar");
                         eliminar();
+                        mostrarArchivos();
                         break;
                     }
                     case 4: {   //cambiar directorio
@@ -130,18 +130,17 @@ public class Client {
         System.out.println("Ingresa el nombre del archivo: ");
     }
 
-    public void eliminar(){     //trabajo en este
-        /*File []listaDeArchivos = (File[]) ois.readObject();//leer lista de archivos
-
+    public void eliminar() throws IOException, ClassNotFoundException {     //trabajo en este
         Scanner reader = new Scanner(System.in);
         System.out.println("Archivo o dir a eliminar: ");
-        String elec = reader.nextLine();*/
-
+        String elec = reader.nextLine();
+        oos.writeObject(elec);
+        oos.flush();
+        System.out.println( (String) ois.readObject() );
     }
 
     public void cambiarDir() throws IOException, ClassNotFoundException {
         Scanner reader = new Scanner(System.in);
-
         System.out.println("Nombre del dir: ");
         if(!dirActual.equals("drive"))  //mostrar la opción de "atrás" para volver a la raíz (drive\)
             System.out.println("( .. para volver al inicio )");
