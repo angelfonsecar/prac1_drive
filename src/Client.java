@@ -22,31 +22,25 @@ public class Client {
             int elec; //inicio de menu
             Scanner reader = new Scanner(System.in);
             do{
-                System.out.println("\nMenu\n1-Subir un archivo o carpeta\n2-Descargar\n3-Eliminar un archivo o carpeta\n4-Cambiar directorio\n0-Salir\n\n>"); //ayuda
+                System.out.println("\nMenu\n1-Subir un archivo o carpeta\n2-Descargar\n3-Eliminar un archivo o carpeta\n4-Cambiar directorio\n0-Salir\n\n>");
                 elec= reader.nextInt();
                 oos.writeObject(elec);
                 switch (elec) {
-                    case 1: {   //subir archivo o carpeta
+                    case 1 -> {   //subir archivo o carpeta
                         System.out.println("Lanzando JFileChooser...");
                         subir();
                         mostrarArchivos();
-                        break;
                     }
-                    case 2: {   //descargar un archivo o carpeta
+                    case 2 -> {   //descargar un archivo o carpeta
                         System.out.println("Descargar un archivo o carpeta");
                         descargar();
-                        break;
                     }
-                    case 3: {   //eliminar archivo o carpeta
+                    case 3 -> {   //eliminar archivo o carpeta
                         System.out.println("Eliminar");
                         eliminar();
                         mostrarArchivos();
-                        break;
                     }
-                    case 4: {   //cambiar directorio
-                        cambiarDir();
-                        break;
-                    }
+                    case 4 -> cambiarDir();   //cambiar directorio
                 }
             }while(elec!=0);
             oos.close();

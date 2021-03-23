@@ -36,24 +36,20 @@ public class Server {
                     int elec = (int) ois.readObject();
                     if(elec==0) break;
                     switch (elec) {
-                        case 1: {   //subir archivo o carpeta
+                        case 1 -> {   //subir archivo o carpeta
                             subir();
                             mostrarArchivos();
-                            break;
                         }
-                        case 2: {
+                        case 2 -> {
                             System.out.println("El cliente quiere descargar");
-                            break;
                         }
-                        case 3: {
+                        case 3 -> {
                             eliminar();
                             mostrarArchivos();
-                            break;
                         }
-                        case 4: {
+                        case 4 -> {
                             System.out.println("cambiar dir");
                             cambiarDir();
-                            break;
                         }
                     }
                 }
